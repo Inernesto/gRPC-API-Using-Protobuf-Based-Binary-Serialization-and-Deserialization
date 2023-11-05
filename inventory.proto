@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package inventory;
+
+// Import the empty message from the google package.
+import "google/protobuf/empty.proto";
+
+message InventoryRecord {
+    string ID = 1;
+    string Name = 2;
+    string Description = 3;
+    string UnitPrice = 4;
+    int32 QuantityInStock = 5;
+    string InventoryValue = 6;  // Consider using a numeric type for currency.
+    int32 ReorderLevel = 7;
+    int32 ReorderTimeInDays = 8;
+    int32 QuantityInReorder = 9;
+    bool Discontinued = 10;
+}
+
+service InventoryService {
+    rpc SearchByID (InventoryRequest) returns (InventoryResponse);
+    rpc Search (SearchRequest) returns (InventoryResponse);
+    rpc SearchRange (SearchRangeRequest) returns (stream InventoryResponse);
+    rpc GetDistribution (GetDistributionRequest) returns (GetDistributionResponse);
+    rpc Update (UpdateRequest) returns (UpdateResponse);
+}
+
+message InventoryRequest {
+    string ID = 1;
+}
+
+message SearchRequest {
+    string KeyName = 1;
+    string KeyValue = 2;
+}
+
+message SearchRangeRequest {
+    string KeyName = 1;
+    int32 KeyValueStart = 2;
+    int32 KeyValueEnd = 3;
+}
+
+message GetDistributionRequest {
+    string KeyName = 1;
+    int32 Percentile = 2;
+}
+
+message GetDistributionResponse {
+    oneof Result {
+        double Value = 1;
+        google.protobuf.Empty empty = 2;
+    }
+}
+
+message InventoryResponse {
+    oneof Result {
+        InventoryRecord inventory_record = 1;
+        google.protobuf.Empty empty = 2;
+    }
+}
+
+message UpdateRequest {
+    string KeyName = 1;
+    string KeyValue = 2;
+    string ValName = 3;
+    string ValValNew = 4;
+}
+
+message UpdateResponse {
+    bool Success = 1;
+}
