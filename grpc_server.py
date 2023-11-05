@@ -173,7 +173,7 @@ inventory_list = [
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     inventory_pb2_grpc.add_InventoryServiceServicer_to_server(InventoryService(inventory_list), server)
-    server.add_insecure_port('172.31.0.66:50051')
+    server.add_insecure_port('[::]:50051')
     server.start()
     server.wait_for_termination()
 
